@@ -9,22 +9,24 @@ if(isset($_FILES['file'])){
     $filename = $_FILES['file']['name'];
     $tmp = $_FILES['file']['tmp_name'];
     
-    // Read file content to check for malicious code
-    $content = file_get_contents($tmp);
+    // Vulnerable: No checks for malicious content or file types
+    move_uploaded_file($tmp, "uploads/".$filename);
+    $success_message = "File '$filename' uploaded successfully.";
     
-    // Check for malicious patterns in PHP, HTML, or any file
-    if (preg_match('/<\?php|<script|javascript:|on\w+\s*=/i', $content)) {
-        $error_message = "Malicious file detected! File contains potentially harmful code.";
-    } elseif (pathinfo($filename, PATHINFO_EXTENSION) === 'php' || pathinfo($filename, PATHINFO_EXTENSION) === 'html') {
-        $error_message = "Malicious file detected! Executable file types are not allowed.";
-    } else {
-        move_uploaded_file($tmp, "uploads/".$filename);
-        $success_message = "File '$filename' uploaded successfully.";
-    }
+    // Vulnerable: Including uploaded content allows malicious scripts to execute
+    $content = file_get_contents("uploads/".$filename);
+    echo $content;
     
     /*
     Prevention Code:
     To prevent malicious file uploads, implement the following:
+    
+    // 1. Validate file extensions
+    $allowed_extensions = ['txt', 'jpg', 'png', 'pdf', 'doc', 'docx'];
+    $file_extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    if (!in_array($file_extension, $allowed_extensions)) {
+        die("Invalid file type. Only allowed: " . implode(', ', $allowed_extensions));
+    }
     
     // 1. Validate file extensions
     $allowed_extensions = ['txt', 'jpg', 'png', 'pdf', 'doc', 'docx'];

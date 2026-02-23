@@ -543,6 +543,7 @@ if(isset($_SESSION['locked']) && $_SESSION['locked'] == true){
                 <li><a href="#features">Features</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="http://127.0.0.1:5000">Security Attack Demonstration</a></li>
                 <li>
                     <form class="search-bar" method="GET" action="search.php">
                         <input type="text" name="query" placeholder="Search for eco-friendly banking solutions..." required>
